@@ -1,0 +1,26 @@
+- Media & Cloud:
+    - Jellyfin:
+        icon: jellyfin
+        href: http://jellyfin.rvlfauzan.my.id/
+        description: Media Streaming
+
+    - OwnCloud:
+        icon: owncloud
+        href: http://100.103.203.8:8080/
+        description: Cloud Storage
+
+- Security & Net:
+    - Vaultwarden:
+        icon: vaultwarden
+        href: https://vault-warden.rvlfauzan.my.id/
+        description: Password Manager
+
+    - AdGuard Home:
+        icon: adguard-home
+        href: http://100.103.203.8:8082/ # Ubah port ini jika web UI AdGuard kamu di-set ke port lain (misal 80)
+        description: DNS & Ad-Blocker
+        widget:
+          type: adguard
+          url: http://192.168.18.10:8082
+          username: rival fauzan
+          password: ${HOMEPAGE_VAR_PASSWORD}

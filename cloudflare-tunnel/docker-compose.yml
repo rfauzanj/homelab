@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  cloudflare-tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare_tunnel
+    # Kebijakan mutlak agar otomatis hidup setelah server booting akibat mati lampu
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
+    # Menghubungkan tunnel ke host network agar bisa mengenali host.docker.internal milik Jellyfin/Vaultwarden
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

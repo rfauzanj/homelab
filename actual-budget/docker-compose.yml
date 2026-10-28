@@ -1,0 +1,21 @@
+services:
+  actual_server:
+    image: actualbudget/actual-server:latest
+    container_name: actual_budget
+    restart: unless-stopped
+    volumes:
+      - ./actual-data:/data
+    expose:
+      - "5006"
+    networks:
+      - homelab-network
+    healthcheck:
+      test: ["CMD-SHELL", "node src/cripts/health-check.js"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+networks:
+  homelab-network:
+    external: true

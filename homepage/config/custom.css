@@ -1,0 +1,121 @@
+/* --- HIDE GLOBAL SCROLLBAR --- */
+::-webkit-scrollbar {
+    display: none;
+}
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* --- MASTER ROUNDED CORNERS (SUDUT MEMBULAT ESTETIK) --- */
+.service-card, 
+.bookmark-card,
+.group-header,
+div[id$="-card"],
+div[id$="-card"] > div,
+div[class*="rounded-lg"] {
+    border-radius: 25px !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+}
+
+/* --- CARD TINTING SETUP (EFEK TRANSPARANSI WARNA KARTU) --- */
+#jellyfin-card, #adguard-home-card, #vaultwarden-card, #owncloud-card {
+    position: relative !important;
+    background-color: transparent !important;
+}
+
+#jellyfin-card::before, #adguard-home-card::before, 
+#vaultwarden-card::before, #owncloud-card::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 6px; 
+    z-index: 0;
+    border-radius: 23px !important;
+    opacity: 0.25; /* Menjaga efek glassmorphism tetap soft */
+}
+
+/* --- WARNA AKSEN UNTUK MASING-MASING KARTU APLIKASI --- */
+#jellyfin-card::before     { background-color: #AA5CC3 !important; } /* Ungu Jellyfin */
+#adguard-home-card::before { background-color: #2BCB77 !important; } /* Hijau AdGuard */
+#vaultwarden-card::before  { background-color: #175DDC !important; } /* Biru Vaultwarden */
+#owncloud-card::before     { background-color: #0096DC !important; } /* Biru OwnCloud */
+
+/* --- PERBAIKAN POSISI TEKS & STATS AGAR BERADA DI ATAS WARNA --- */
+.service-card > div {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- POSISI BADGE PING & STATUS WIDGET (ADGUARD) --- */
+span[class*="status-"], 
+div[class*="status-"] {
+    position: absolute !important;
+    top: 10px !important;
+    right: 12px !important;
+    z-index: 10 !important;
+    border-radius: 8px !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    padding: 2px 6px !important;
+}
+
+/* --- KUSTOMISASI INDIKATOR SUMBER DAYA DI HEADER --- */
+.information-widget-resource div[style*="width"] {
+    background: linear-gradient(90deg, #4ade80 0%, #2dd4bf 40%, #3b82f6 75%, #b80fde 100%) !important;
+    opacity: 0.40 !important;
+    border-radius: 10px !important;
+}
+.information-widget-resource:nth-of-type(1) svg { color: #4ade80 !important; } 
+.information-widget-resource:nth-of-type(2) svg { color: #22d3ee !important; }
+.information-widget-resource:nth-of-type(3) svg { color: #ef4444 !important; }
+
+/* --- GAYA UNTUK BARIS BOOKMARK --- */
+li.bookmark a {
+    border-radius: 25px !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    margin-bottom: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+li.bookmark a:hover {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.bookmark-name {
+    color: #f5f5f5c4 !important;
+    font-weight: 600 !important;
+    font-size: 0.85rem !important;
+}
+.bookmark-description {
+    color: #94a3b8 !important;
+    font-size: 0.7rem !important;
+}
+
+/* --- OPTIMASI HEADER WIDGET UNTUK DESTOP & MOBILE --- */
+@media (min-width: 768px) {
+    .widget-container, .information-widget-logo, [class*="information-widget-glances"] {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 50px !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        height: 42px !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 0 16px !important;
+        margin-top: 10px !important;
+    }
+}
+@media (max-width: 767px) {
+    .widget-container, .information-widget-logo, [class*="information-widget-glances"] {
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border-radius: 25px !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        padding: 8px 12px !important;
+        width: 100% !important;
+    }
+}

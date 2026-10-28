@@ -1,0 +1,23 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: password_vault
+    environment:
+      - Domain=https://vault.rvlfauzan.my.id
+      - WEBSOCKET_ENABLED=true
+      - SIGNUPS_ALLOWED=false   # Kita izinkan pendaftaran dulu untuk akun pertamamu
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - IP_HEADER= X-Forwarded-For
+    volumes:
+      - ./data:/data
+    expose:
+      - "80"
+    # ports:
+    #   - "8081:80"
+    networks:
+      - homelab-network
+    restart: unless-stopped
+
+networks:
+  homelab-network:
+    external: true

@@ -1,0 +1,34 @@
+title: Home Server Dashboard
+startUrl: ""
+
+# Mengadopsi setelan visual dari contoh Reddit
+headerStyle: boxedWidgets
+theme: dark
+color: neutral
+disableCollapse: true
+iconStyle: theme
+
+# Agar dashboard memenuhi layar lebar tanpa space kosong berlebih di samping
+fullWidth: true
+maxGroupColumns: 3
+
+# Mengaktifkan efek transparansi latar belakang (Pastikan file bg.jpg ada di config/images/)
+background:
+  image: /images/bg.jpg
+  blur: md
+  saturate: 50
+  brightness: 50
+  opacity: 80
+
+# Penataan baris grid yang rapi dan seimbang
+layout:
+  - Media & Cloud:
+      columns: 2
+  - Security & Net:
+      columns: 2
+  - Developer:
+      columns: 3
+  - Social:
+      columns: 3
+  - Entertainment:
+      columns: 3
