@@ -1,0 +1,97 @@
+networks:
+  homelab-network:
+    external: true
+  socket-net:
+    internal: true          # tanpa rute ke internet
+
+services:
+  socket-proxy:
+    image: tecnativa/docker-socket-proxy:latest
+    container_name: socket-proxy
+    restart: unless-stopped
+    environment:
+      CONTAINERS: 1         # baca daftar, status, health, dan log kontainer
+      INFO: 1
+      EVENTS: 1
+      POST: 0               # blokir semua aksi tulis (start/stop/exec/create)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - socket-net
+    security_opt:
+      - no-new-privileges:true
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:2
+    container_name: uptime-kuma
+    restart: unless-stopped
+    depends_on:
+      - socket-proxy
+    expose:
+      - "3001"
+    volumes:
+      - ./kuma-data:/app/data
+    networks:
+      - homelab-network     # menjangkau Nginx dan aplikasi
+      - socket-net          # menjangkau socket-proxy
+    mem_limit: 512m
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    restart: unless-stopped
+    depends_on:
+      - socket-proxy
+    environment:
+      DOCKER_HOST: tcp://socket-proxy:2375
+      DOZZLE_NO_ANALYTICS: "true"
+    expose:
+      - "8080"
+    networks:
+      - homelab-network
+      - socket-net
+    mem_limit: 128m
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+
+  beszel:
+    image: henrygd/beszel:latest
+    container_name: beszel
+    restart: unless-stopped
+    environment:
+      APP_URL: https://metrics.rvlfauzan.my.id
+    expose:
+      - "8090"
+    volumes:
+      - ./beszel-data:/beszel_data
+      - ./beszel-socket:/beszel_socket
+    networks:
+      - homelab-network
+    mem_limit: 256m
+    security_opt:
+      - no-new-privileges:true
+
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    restart: unless-stopped
+    network_mode: host      # perlu untuk statistik jaringan host
+    profiles: ["agent"]     # dijalankan terpisah, setelah KEY didapat dari hub
+    environment:
+      LISTEN: /beszel_socket/beszel.sock   # unix socket, TIDAK membuka port TCP
+      KEY: ${BESZEL_KEY:-}
+    volumes:
+      - ./beszel-socket:/beszel_socket
+      - ./beszel-agent-data:/var/lib/beszel-agent
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    mem_limit: 128m
+    security_opt:
+      - no-new-privileges:true

@@ -1,5 +1,3 @@
-version: '3.8' # Bisa dihapus atau biarkan saja
-
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest

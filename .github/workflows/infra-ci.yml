@@ -1,0 +1,78 @@
+name: infra-ci
+
+on: 
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: infra-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contens: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-crednetials: false
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+
+validate:
+  name: Validate configs
+  runs-on: ubuntu-24.04
+  timeout-minutes: 10
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: yamllint
+      run: pipx run yamllint .
+    - name: Compose config
+      run: ./scripts/validate-compose.sh
+    - name: Nginx syntax
+      run: |
+        docker run --rm \
+          -v "$PWD/nginx/conf.d:/etc/nginx/conf.d:ro" \
+          nginx:stable-alpine nginx -t
+
+policy:
+  name: Policy as code
+  runs-on: ubuntu-24.04
+  timeout-minutes: 5
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - uses: aquasecurity/trivy-action@0.35.0
+      with:
+        scan-type: fs
+        scan-ref: .
+        scanners: secret,misconfig
+        severity: HIGH,CRITICAL
+        exit-code: "1"
+
+workflows-security:
+  name: Workflows security
+  runs-on: ubuntu-24.04
+  timeout-minutes: 5
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+    - name: actionlint
+      run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7
+    - name: Cek pin SHA
+      run: ./scripts/check-pinned-actions.sh

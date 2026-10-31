@@ -1,0 +1,8 @@
+title = "homelab gitleaks"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Template tanpa nilai asli"
+paths = ['''(^|/)\.env\.example$''']

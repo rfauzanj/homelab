@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    diectory: /
+    schedule:
+      inteval: weekly
+    cooldown:
+      default-days: 7       # beri wakttu komunitas mendeteksi rilis bemasalah
+    groups:
+      actions:
+        patterns: ["*"]
